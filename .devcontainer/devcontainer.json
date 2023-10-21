@@ -1,0 +1,25 @@
+{
+	"name": "Python 3",
+	"image": "mcr.microsoft.com/devcontainers/python:0-3.11",
+	"customizations": {
+		"vscode": {
+			"settings": {
+                "jupyter.themeMatplotlibPlots": true
+            },
+			"extensions": [
+				"github.copilot",
+				"ms-python.black-formatter",
+                "ms-python.isort",
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "ms-toolsai.datawrangler",
+                "ms-toolsai.jupyter",
+                "ms-toolsai.jupyter-keymap",
+                "ms-toolsai.jupyter-renderers",
+                "ms-toolsai.vscode-jupyter-cell-tags",
+                "ms-toolsai.vscode-jupyter-slideshow"
+			]
+		}
+	},
+	"postCreateCommand": "pip3 install -r requirements.txt && python3 -m spacy download de_core_news_md"
+}
