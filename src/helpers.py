@@ -1,13 +1,33 @@
 from collections import Counter
 from matplotlib import pyplot as plt
+import spacy
 import pandas as pd
 import gensim
 import matplotlib.pyplot as plt
 from gensim.models import LsiModel, LdaMulticore, CoherenceModel
 
 
-# clean up spacy docs
-def tidy_tokens(docs):
+def extract_spacy_tokens(docs):
+    """Extract spaCy doc tokens to DataFrame."""
+
+    def _extract_single(doc: spacy.tokens.doc.Doc):
+        return [
+            (
+                i.text,
+                i.i,
+                i.lemma_,
+                i.ent_type_,
+                i.tag_,
+                i.dep_,
+                i.pos_,
+                i.is_stop,
+                i.is_alpha,
+                i.is_digit,
+                i.is_punct,
+            )
+            for i in doc
+        ]
+
     cols = [
         "msg_id",
         "token",
@@ -24,27 +44,11 @@ def tidy_tokens(docs):
     ]
 
     meta_df = []
-    for ix, doc in enumerate(docs):
-        meta = [
-            (
-                i.text,
-                i.i,
-                i.lemma_,
-                i.ent_type_,
-                i.tag_,
-                i.dep_,
-                i.pos_,
-                i.is_stop,
-                i.is_alpha,
-                i.is_digit,
-                i.is_punct,
-            )
-            for i in doc
-            if i.text.strip()
-        ]
+    for _, doc in enumerate(docs):
+        meta = _extract_single(doc[0])
         meta = pd.DataFrame(meta)
         meta.columns = cols[1:]
-        meta = meta.assign(msg_id=ix).loc[:, cols]
+        meta = meta.assign(msg_id=doc[1]["msg_id"]).loc[:, cols]
         meta_df.append(meta)
 
     return pd.concat(meta_df)
