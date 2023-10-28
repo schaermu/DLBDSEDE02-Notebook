@@ -102,17 +102,36 @@ def get_specific_topics(model, num_words=5):
 
 
 def compute_coherence_values(
-    dict, corpus, model_type, training_set, stop, coherence="c_v", start=2, step=3
+    dict,
+    corpus,
+    model_type,
+    training_set,
+    stop,
+    coherence="c_v",
+    start=2,
+    step=3,
+    alpha=0.01,
+    eta="auto",
 ):
     coherence_values = []
     model_list = []
     for num_topics in range(start, stop, step):
         # generate model and store coherence score
         if model_type == "lsi":
-            model = LsiModel(corpus, num_topics=num_topics, id2word=dict)
+            model = LsiModel(
+                corpus, num_topics=num_topics, id2word=dict, random_seed=200
+            )
         elif model_type == "lda":
             model = LdaMulticore(
-                corpus, num_topics=num_topics, id2word=dict, passes=10, workers=6
+                corpus,
+                num_topics=num_topics,
+                id2word=dict,
+                chunksize=100,
+                passes=10,
+                workers=6,
+                random_state=200,
+                alpha=alpha,
+                eta=eta,
             )
         model_list.append(model)
         # get coherence score using cross-validation set
