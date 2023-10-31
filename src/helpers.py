@@ -112,6 +112,9 @@ def compute_coherence_values(
     step=3,
     alpha=0.01,
     eta="auto",
+    gamma=0.001,
+    chunksize=100,
+    passes=10,
 ):
     coherence_values = []
     model_list = []
@@ -126,12 +129,13 @@ def compute_coherence_values(
                 corpus,
                 num_topics=num_topics,
                 id2word=dict,
-                chunksize=100,
-                passes=10,
+                chunksize=chunksize,
+                passes=passes,
                 workers=6,
                 random_state=200,
                 alpha=alpha,
                 eta=eta,
+                gamma_threshold=gamma,
             )
         model_list.append(model)
         # get coherence score using cross-validation set
